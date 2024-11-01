@@ -1,4 +1,4 @@
-# Builds either a recovery image (Sonoma-recovery.img) or a full installer (Sonoma-full.img) for Sonoma.
+# Builds either a recovery image (Sequoia-recovery.img) or a full installer (Sequoia-full.img) for Sequoia.
 
 # To build the full installer you must run this on macOS.
 # The recovery can be built on either macOS or Linux.
@@ -8,7 +8,7 @@
 
 # For macOS you'll probably need to run xcode-select --install to get the commandline tools
 
-SONOMA_APP=/Applications/Install\ macOS\ Sonoma.app
+SONOMA_APP=/Applications/Install\ macOS\ Sequoia.app
 
 LINUX_TOOLS = qemu-img
 
@@ -25,20 +25,20 @@ ifeq ($(OS),)
 			$(if $(shell which $(exec)),some string,$(error "Missing required $(exec) tool for build")))
 endif
 
-all: Sonoma-recovery.img
+all: Sequoia-recovery.img
 
 %.img : %.dmg
 	ln $< $@ || cp $< $@
 
 ifeq ($(OS),MACOS)
 
-Sonoma-full.dmg : $(SONOMA_APP)
-	hdiutil create -o "$@" -size 15g -layout GPTSPUD -fs HFS+J
+Sequoia-full.dmg : $(SONOMA_APP)
+	hdiutil create -o "$@" -size 16410m -layout GPTSPUD -fs HFS+J
 	hdiutil attach -noverify -mountpoint /Volumes/install_build "$@"
 	sudo "$</Contents/Resources/createinstallmedia" --volume /Volumes/install_build --nointeraction
-	hdiutil detach "/Volumes/Install macOS Sonoma"
+	hdiutil detach "/Volumes/Install macOS Sequoia"
 
-# Avoid redownloading Sonoma if the app already exists
+# Avoid redownloading Sequoia if the app already exists
 ifeq (,$(wildcard $(SONOMA_APP)))
 $(SONOMA_APP) : InstallAssistant.pkg
 	sudo installer -pkg $< -target /
@@ -46,12 +46,12 @@ endif
 
 else
 
-Sonoma-full.dmg :
-	$(error "Building a full installer requires this script to be run on macOS, run 'make Sonoma-recovery.img' instead")
+Sequoia-full.dmg :
+	$(error "Building a full installer requires this script to be run on macOS, run 'make Sequoia-recovery.img' instead")
 
 endif
 
-Sonoma-recovery.dmg : BaseSystem.dmg
+Sequoia-recovery.dmg : BaseSystem.dmg
 	rm -f $@
 ifeq ($(OS),MACOS)
 	hdiutil convert $< -format UDRW -o $@
@@ -60,11 +60,11 @@ else
 endif
 
 BaseSystem.dmg :
-	../../fetch-macOS-v2.py --action download --board-id Mac-827FAC58A8FDFA22 --os latest
+	../../fetch-macOS-v2.py --action download --board-id Mac-A61BADE1FDAD7B05 --os latest
 
 InstallAssistant.pkg :
-	../../backups/fetch-macOS.py --version latest --title "macOS Sonoma"
+	../../backups/fetch-macOS.py --version latest --title "macOS Sequoia"
 
 clean :
-	rm -f BaseSystem.chunklist BaseSystem.dmg SharedSupport.dmg InstallAssistant.pkg Sonoma-recovery.img Sonoma-full.img Sonoma-recovery.dmg Sonoma-full.dmg
+	rm -f BaseSystem.chunklist BaseSystem.dmg SharedSupport.dmg InstallAssistant.pkg Sequoia-recovery.img Sequoia-full.img Sequoia-recovery.dmg Sequoia-full.dmg
 	rm -rf content
