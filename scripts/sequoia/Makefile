@@ -51,7 +51,7 @@ Sequoia-full.dmg :
 
 endif
 
-Sequoia-recovery.dmg : BaseSystem.dmg
+Sequoia-recovery.dmg : com.apple.recovery.boot/BaseSystem.dmg
 	rm -f $@
 ifeq ($(OS),MACOS)
 	hdiutil convert $< -format UDRW -o $@
@@ -59,7 +59,7 @@ else
 	qemu-img convert $< -O raw $@
 endif
 
-BaseSystem.dmg :
+com.apple.recovery.boot/BaseSystem.dmg :
 	../../fetch-macOS-v2.py --action download --board-id Mac-A61BADE1FDAD7B05 --os latest
 
 InstallAssistant.pkg :
@@ -67,4 +67,4 @@ InstallAssistant.pkg :
 
 clean :
 	rm -f BaseSystem.chunklist BaseSystem.dmg SharedSupport.dmg InstallAssistant.pkg Sequoia-recovery.img Sequoia-full.img Sequoia-recovery.dmg Sequoia-full.dmg
-	rm -rf content
+	rm -rf content com.apple.recovery.boot

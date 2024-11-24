@@ -51,7 +51,7 @@ Sonoma-full.dmg :
 
 endif
 
-Sonoma-recovery.dmg : BaseSystem.dmg
+Sonoma-recovery.dmg : com.apple.recovery.boot/BaseSystem.dmg
 	rm -f $@
 ifeq ($(OS),MACOS)
 	hdiutil convert $< -format UDRW -o $@
@@ -59,7 +59,7 @@ else
 	qemu-img convert $< -O raw $@
 endif
 
-BaseSystem.dmg :
+com.apple.recovery.boot/BaseSystem.dmg :
 	../../fetch-macOS-v2.py --action download --board-id Mac-827FAC58A8FDFA22 --os latest
 
 InstallAssistant.pkg :
@@ -67,4 +67,4 @@ InstallAssistant.pkg :
 
 clean :
 	rm -f BaseSystem.chunklist BaseSystem.dmg SharedSupport.dmg InstallAssistant.pkg Sonoma-recovery.img Sonoma-full.img Sonoma-recovery.dmg Sonoma-full.dmg
-	rm -rf content
+	rm -rf content com.apple.recovery.boot
