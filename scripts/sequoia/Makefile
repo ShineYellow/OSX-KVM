@@ -33,7 +33,7 @@ all: Sequoia-recovery.img
 ifeq ($(OS),MACOS)
 
 Sequoia-full.dmg : $(SONOMA_APP)
-	hdiutil create -o "$@" -size 16410m -layout GPTSPUD -fs HFS+J
+	hdiutil create -o "$@" -size 17000m -layout GPTSPUD -fs HFS+J
 	hdiutil attach -noverify -mountpoint /Volumes/install_build "$@"
 	sudo "$</Contents/Resources/createinstallmedia" --volume /Volumes/install_build --nointeraction
 	hdiutil detach "/Volumes/Install macOS Sequoia"
